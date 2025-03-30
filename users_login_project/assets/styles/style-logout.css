@@ -1,28 +1,39 @@
 body {
-    background-color: #e8f5e9;
+    background-color: #f4e9d8;
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
+    margin: 15px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.welcome-container {
+.messages-container {
     text-align: left;
     padding: 20px;
 }
 
 h1 {
     font-size: 40px;
-    color: #2e7d32;
-    margin-bottom: 15px;
+    color: #ba6b03;
+    margin-bottom: 35px;
 }
 
-.user-info-container {
+h2 {
+    font-size: 25px;
+    color: #000000;
+    margin-bottom: 25px;
+}
+
+p{
+    font-size: 20px; 
+}
+
+.main-container{
     display: flex; /* Habilita flexbox para esta fila */
     justify-content: space-between; /* Distribuye el espacio entre el saludo y el botón */
     align-items: center; /* Alinea verticalmente los elementos */
     margin-bottom: 20px; /* Agrega margen inferior */
 }
+
+
 
 .user-info-container p{
     font-size: 27px;
@@ -58,12 +69,12 @@ h1 {
 }
 
 .card {
-    background-color: #c4e5c5;
+    background-color: #e9d7b4;
     border-radius: 10px;
-    color: #165e19;
+    color: #5e4c16;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    width: 220px;
-    height: 280px;
+    width: 200px;
+    height: 130px;
     margin: 10px;
     padding: 15px;
     text-align: center;
@@ -73,22 +84,12 @@ h1 {
 .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    background-color: #42a247;
+    background-color: #df9b2e;
     color: white;
 }
 
-.card img {
-    border-radius: 5px;
-    margin-bottom: 20px;
-    display: flex; /* Habilita flexbox en el contenedor de la imagen */
-    justify-content: center; /* Centra la imagen horizontalmente */
-    align-items: center; /* Centra la imagen verticalmente */
-    width: 100%;
-    height: 45%;
-}
-
 .card a {
-    background-color: #a5d6a7;
+    background-color: #ffba43;
     color: #333;
     padding: 8px 12px;
     text-decoration: none;
@@ -96,20 +97,6 @@ h1 {
 }
 
 .card a:hover {
-    background-color: #3ed746;
-}
-
-.youtube-image-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 42%;
-    margin-bottom: 20px;
-}
-
-.youtube-image-container img {
-    width: 80%;
-    height: auto;
-    border-radius: 5px;
+    background-color: #ffa70f;
+    font-weight: bold;
 }
