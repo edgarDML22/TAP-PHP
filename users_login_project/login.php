@@ -12,11 +12,13 @@ include 'includes/functions/signup_functions.php';
     <title>Log in</title>
 </head>
 <body> 
+    <!-- mensajes de estado -->
+    <?php if (isset($_SESSION['error_message']) || isset($_SESSION['success_message'])): ?>
+            <?php show_error_or_success_message(); ?>
+    <?php endif; ?>
+    
     <div class="main_container">
     <h1>USER LOGIN</h1>
-    <!-- mensajes de estado -->
-    <?php show_error_or_success_message()?>
-
     <!-- un forms donde pidamos usuario y contraseña -->
     <form action="includes/controllers/login_controller.php" method="post">
     <div style="display: flex; align-items: center; margin-bottom: 1px; padding: 6px;">
@@ -31,7 +33,6 @@ include 'includes/functions/signup_functions.php';
 
     <button type="submit" class="send_button">LOGIN</button>
     </form>
-    <br><br><br>
     </div>
 
     <div class="signup_container">

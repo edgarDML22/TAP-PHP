@@ -31,8 +31,8 @@
                 // Iniciar sesión si el usuario y la contraseña coinciden
                 session_start();
                 $_SESSION['username'] = $username;
-                $_SESSION['nombre'] = $user['name'];
-                $_SESSION['apellido'] = $user['lastname'];
+                $_SESSION['name'] = $user['name'];
+                $_SESSION['lastname'] = $user['lastname'];
                 header("Location: ../../welcome.php");
                 exit;
             }

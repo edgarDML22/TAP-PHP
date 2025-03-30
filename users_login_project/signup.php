@@ -9,37 +9,45 @@ include 'includes/functions/signup_functions.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
-    <script src="assets/js/signup.js"></script>
+    <link rel="stylesheet" href="assets/styles/style_signup.css">
 </head>
 <body>
-    <h1>SIGN UP</h1>
-    <?php show_error_or_success_message()?>
+    <div class="signup-container">
+        <h1>SIGN UP</h1>
+        <?php if (isset($_SESSION['error_message']) || isset($_SESSION['success_message'])): ?>
+            <?php show_error_or_success_message(); ?>
+        <?php endif; ?>
 
-    <form action="includes/controllers/signup_controller.php" method="post">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" value="<?php echo old_value('signup_name'); ?>" placeholder="Name" required >
-        <br><br>
+        <form action="includes/controllers/signup_controller.php" method="post">
+            <div class="input-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" value="<?php echo old_value('signup_name'); ?>" placeholder="Name" required>
+            </div>
 
-        <label for="lastname">Last Name:</label>
-        <input type="text" id="lastname" name="lastname" value="<?php echo old_value('signup_lastname'); ?>" placeholder="Last name" required>
-        <br><br>
+            <div class="input-group">
+                <label for="lastname">Last Name:</label>
+                <input type="text" id="lastname" name="lastname" value="<?php echo old_value('signup_lastname'); ?>" placeholder="Last name" required>
+            </div>
 
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" value="<?php echo old_value('signup_username'); ?>" placeholder="Username" required>
-        <br><br>
+            <div class="input-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" value="<?php echo old_value('signup_username'); ?>" placeholder="Username" required>
+            </div>
 
-        <label for="pass">Password:</label>
-        <input type="password" id="pass" name="pass" placeholder="Password" required>
-        <br><br>
+            <div class="input-group">
+                <label for="pass">Password:</label>
+                <input type="password" id="pass" name="pass" placeholder="Password" required>
+            </div>
 
-        <label for="confirm_pass">Confirm Password:</label>
-        <input type="password" id="confirm_pass" name="confirm_pass" placeholder="Confirm your password" required>
-        <br><br>
+            <div class="input-group">
+                <label for="confirm_pass">Confirm Password:</label>
+                <input type="password" id="confirm_pass" name="confirm_pass" placeholder="Confirm your password" required>
+            </div>
 
-        <button type="submit">Sign Up</button>
-    </form>
+            <button type="submit" class="signup-button">Sign Up</button>
+        </form>
+    </div>
 
-    <?php clear_session_values()?>
-
+    <?php clear_session_values(['signup_name', 'signup_lastname', 'signup_username']); ?>
 </body>
 </html>

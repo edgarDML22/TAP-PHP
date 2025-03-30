@@ -105,3 +105,28 @@ button[type="submit"]:active {
 .signup-button:active {
     background-color: #07710e;
 }
+
+/* Estilos para el mensaje de error y éxito */
+.error-message, .success-message {
+    text-align: center;
+    width: auto;
+    font-size: 16px;
+    margin-bottom: 10px;
+    padding: 8px;
+    border-radius: 5px;
+    margin: 0 auto 10px auto; /* Centra horizontalmente y agrega margen inferior */
+}
+
+.error-message {
+    width: 300px;
+    color: #cc0000;
+    background-color: #ffe6e6;
+    border: 1px solid #cc0000;
+}
+
+.success-message {
+    width: 360px;
+    color: green;
+    background-color: #e6ffe6;
+    border: 1px solid green;
+}

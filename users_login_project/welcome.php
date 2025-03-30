@@ -12,7 +12,7 @@ verify_session();
     
 </head>
 <body>
-<h6>CONTENT JIJIJIJA</h6>
+<h1>This is the Welcome Page</h1>
 
 <!-- En la esquina superior derecha -->
 <form action="logout.php" method="post">

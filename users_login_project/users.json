@@ -10,5 +10,17 @@
         "lastname": "Ruiz",
         "username": "pep03",
         "password": "123"
+    },
+    {
+        "name": "Juanito",
+        "lastname": "Dominguez",
+        "username": "juan01",
+        "password": "123"
+    },
+    {
+        "name": "Maria",
+        "lastname": "Ramirez",
+        "username": "maria02",
+        "password": "123"
     }
 ]
