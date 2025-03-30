@@ -11,5 +11,5 @@
     }
     function welcome_message(){
         // Mostrar el mensaje de bienvenida
-        echo "¡Welcome, " . $_SESSION['name'] . " " . $_SESSION['lastname'] . "!";
+        echo "Welcome, " . $_SESSION['name'] . " " . $_SESSION['lastname'] . "!";
     }
