@@ -1,45 +1,49 @@
 <?php
-    session_start();
-    // Verificar si hay una sesión activa o si llegaron datos por POST
-    if (!isset($_SESSION['username']) && (!isset($_POST['username']) || !isset($_POST['pass']))) {
+session_start();
+require_once '../../db_config.php'; // Incluir el archivo de configuración de la base de datos
+
+// Verificar si hay una sesión activa o si llegaron datos por POST
+if (!isset($_SESSION['username']) && (!isset($_POST['username']) || !isset($_POST['pass']))) {
+    header("Location: ../../login.php");
+    exit;
+}
+
+// Si el método es POST (login)
+if ($_SERVER["REQUEST_METHOD"] == "POST"){
+    $username = trim(htmlspecialchars($_POST["username"]));
+    $password = trim(htmlspecialchars($_POST["pass"]));
+
+    // Buscar el usuario en la base de datos por su username
+    $stmt = $conn->prepare("SELECT id, username, pass, name, lastname FROM users WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows == 1) {
+        $user = $result->fetch_assoc();
+        // Verificar si la contraseña ingresada coincide con el hash almacenado
+        if (password_verify($password, $user['pass'])) {
+            // Iniciar sesión si la contraseña es correcta
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['name'] = $user['name'];
+            $_SESSION['lastname'] = $user['lastname'];
+            $stmt->close();
+            $conn->close();
+            header("Location: ../../welcome.php");
+            exit;
+        } else {
+            $_SESSION['error_message'] = "Username or Password Incorrect.";
+            $stmt->close();
+            $conn->close();
+            header("Location: ../../login.php");
+            exit;
+        }
+    } else {
+        $_SESSION['error_message'] = "Username or Password Incorrect.";
+        $stmt->close();
+        $conn->close();
         header("Location: ../../login.php");
         exit;
     }
-
-    // Si el método es POST (login)
-    if ($_SERVER["REQUEST_METHOD"] == "POST"){
-        $username = trim(htmlspecialchars($_POST["username"]));
-        $password = trim(htmlspecialchars($_POST["pass"]));
-
-        // Leer y decodificar el archivo JSON
-        $json_data = file_get_contents('../../users.json');
-        $users = json_decode($json_data, true);
-
-        //Primero ver si el JSON está vacío 
-        if ($users === null) {
-            session_start();
-            $_SESSION['error_message'] = "There are no users registered in the system.";
-            header("Location: ../../login.php");
-            exit;
-        }
-
-        //continuamos para revisar si hay coincidencias en el JSON file
-        $valid_user = false;
-        foreach ($users as $user) {
-            if ($user['username'] == $username && $user['password'] == $password) {
-                $valid_user = true;
-                // Iniciar sesión si el usuario y la contraseña coinciden
-                session_start();
-                $_SESSION['username'] = $username;
-                $_SESSION['name'] = $user['name'];
-                $_SESSION['lastname'] = $user['lastname'];
-                header("Location: ../../welcome.php");
-                exit;
-            }
-        }
-        if ($valid_user == false){
-            $_SESSION['error_message'] = "Username or Password Incorrect.";
-            header("Location: ../../login.php");
-            exit;
-        }
-    }
+}
+?>

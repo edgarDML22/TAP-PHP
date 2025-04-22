@@ -99,32 +99,40 @@ h1 {
     background-color: #3ed746;
 }
 
-.youtube-image-container {
+.product-image {
+    width: auto;
+    height: auto;
+    max-height: 150px;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.filter-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    height: 42%;
     margin-bottom: 20px;
 }
 
-.youtube-image-container img {
-    width: 80%;
-    height: auto;
-    border-radius: 5px;
+.filter-container label {
+    margin-right: 10px;
+    font-weight: bold;
 }
 
-.calculator-image-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    margin-top: 20px;
-    margin-bottom: 2px;
+.filter-container select, .filter-container button {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    font-size: 16px;
 }
 
-.calculator-image-container img {
-    width: 120px; /* Usa max-width para evitar que la imagen se estire */
-    height: 150px; /* Permite que la altura se ajuste automáticamente */
-    border-radius: 5px;
+.filter-container button {
+    background-color: #4caf50;
+    color: white;
+    cursor: pointer;
+}
+
+.filter-container button:hover {
+    background-color: #388e3c;
 }

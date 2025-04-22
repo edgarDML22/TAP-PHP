@@ -1,6 +1,11 @@
 <?php
 include 'includes/functions/welcome_functions.php';
+require_once 'db_config.php';
 verify_session();
+
+// Variables para mantener el estado del filtro
+$sort = isset($_GET['sort']) ? $_GET['sort'] : 'default';
+$category_filter = isset($_GET['category']) ? $_GET['category'] : 'all';
 ?>
 
 <!DOCTYPE html>
@@ -9,54 +14,90 @@ verify_session();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main Page</title>
-    <link rel="stylesheet" href="assets/styles/style-welcome.css">
+    <link rel="stylesheet" href="assets/styles/style-main-page.css">
+
 </head>
 <body>
     <div class="welcome-container">
         <h1>Welcome Page</h1>
-
         <div class="user-info-container">
             <p class="welcome-message"><?php welcome_message() ?></p>
             <form action="logout.php" method="post" class="logout-form">
                 <button type="submit" class="logout-button">Log out</button>
             </form>
-        </div>
+    </div>
 
-        <div class="cards-container">
-            <div class="card">
-                <h2>Ping Pong Game</h2>
-                <img src="assets/images/ping_pong_logo.jpeg" alt="Ping Pong">
-                <a href="pages/proyecto_ping_pong/index.html">Ping Pong</a>
-            </div>
+    <div class="filter-container">
+        <form method="get">
+            <label for="sort">Ordenar por:</label>
+            <select name="sort" id="sort">
+                <option value="default" <?php if ($sort == 'default') echo 'selected'; ?>>Por defecto</option>
+                <option value="price_asc" <?php if ($sort == 'price_asc') echo 'selected'; ?>>Menor a mayor precio</option>
+                <option value="price_desc" <?php if ($sort == 'price_desc') echo 'selected'; ?>>Mayor a menor precio</option>
+            </select>
 
-            <div class="card">
-                <h2>Paint Project</h2>
-                <img src="assets/images/paint_logo.jpeg" alt="Paint"> 
-                <a href="pages/proyecto_paint/index.html">Paint</a> 
-            </div>
+            <label for="category">Filtrar por categoría:</label>
+            <select name="category" id="category">
+                <option value="all" <?php if ($category_filter == 'all') echo 'selected'; ?>>Todas las categorías</option>
+                <?php
+                // Obtener todas las categorías únicas de la base de datos
+                $categories_sql = "SELECT DISTINCT category FROM products ORDER BY category ASC";
+                $categories_result = $conn->query($categories_sql);
 
-            <div class="card">
-                <h2>Calculator</h2>
-                <div class="calculator-image-container">
-                    <img src="assets/images/calculator_logo.jpeg" alt="Calculadora">
+                if ($categories_result->num_rows > 0) {
+                    while ($cat_row = $categories_result->fetch_assoc()) {
+                        $categoria = htmlspecialchars($cat_row["category"]);
+                        echo '<option value="' . $categoria . '"';
+                        if ($category_filter == $categoria) echo 'selected';
+                        echo '>' . $categoria . '</option>';
+                    }
+                }
+                ?>
+            </select>
+            <button type="submit">Filtrar</button>
+        </form>
+    </div>
+
+
+    <div class="cards-container">
+        <?php
+        $sql = "SELECT id, nameP, price, image FROM products";
+        $where = '';
+        $order_by = '';
+
+        // Aplicar filtro de categoría
+        if ($category_filter != 'all') {
+            $where = " WHERE category = '" . $conn->real_escape_string($category_filter) . "'";
+        }
+
+        // Aplicar ordenamiento por precio
+        if ($sort == 'price_asc') {
+            $order_by = " ORDER BY price ASC";
+        } elseif ($sort == 'price_desc') {
+            $order_by = " ORDER BY price DESC";
+        }
+
+        $sql .= $where . $order_by;
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $nombre_producto = htmlspecialchars($row["nameP"]);
+                $precio_producto = htmlspecialchars($row["price"]);
+                $nombre_archivo_imagen = htmlspecialchars($row["image"]);
+                $ruta_imagen = 'assets/images/products/' . $nombre_archivo_imagen;
+                ?>
+                <div class="card">
+                    <h2><?php echo $nombre_producto; ?></h2>
+                    <img src="<?php echo $ruta_imagen; ?>" alt="<?php echo $nombre_producto; ?>" class="product-image">
+                    <p>Precio: $<?php echo $precio_producto; ?></p>
                 </div>
-                <a href="pages/calculator_project/index.html">Calculator</a>
-            </div>
-
-            <div class="card">
-                <h2>YouTube</h2>
-                <div class="youtube-image-container">
-                    <img src="assets/images/youtube_logo.png" alt="YouTube" >
-                </div>
-                <a href="https://www.youtube.com">YouTube Page</a>
-            </div>
-
-            <div class="card">
-                <h2>Github Project</h2>
-                <img src="assets/images/project_git_logo.jpeg" alt="GitHub" style="height: 35%">
-                <a href="https://github.com/edgarDML22/TAP-PHP">GitHub Repository</a>
-            </div>
-        </div>
+                <?php
+            }
+        } else {
+            echo "<p>No se encontraron productos con los criterios de filtro.</p>";
+        }
+        ?>
     </div>
 </body>
 </html>

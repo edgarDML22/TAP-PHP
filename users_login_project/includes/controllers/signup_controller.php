@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once '../../db_config.php'; // Incluir el archivo de configuración de la base de datos
 
 // Verificar si el formulario fue enviado (método POST)
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -8,27 +9,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = htmlspecialchars($_POST["username"]);
     $password = trim(htmlspecialchars($_POST["pass"]));
     $confirm_password = trim(htmlspecialchars($_POST["confirm_pass"]));
-
-    // Leer el archivo JSON de usuarios
-    $json_data = file_get_contents('../../users.json');
-    $users = json_decode($json_data, true);
-
-    // Verificar si el archivo JSON está vacío
-    if ($users === null) {
-        $users = [];  // Inicializar el array si está vacío
-    }
-
-    // Verificar si el nombre de usuario ya existe
-    foreach ($users as $user) {
-        if ($user['username'] == $username) {
-            $_SESSION['error_message'] = "Username already taken.";
-            $_SESSION['signup_name'] = $name;
-            $_SESSION['signup_lastname'] = $lastname;
-            $_SESSION['signup_username'] = $username;
-            header("Location: ../../signup.php");
-            exit;
-        }
-    }
 
     // Verificar si las contraseñas coinciden
     if ($password != $confirm_password) {
@@ -40,22 +20,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    // Crear un nuevo usuario
-    $new_user = [
-        "name" => $name,
-        "lastname" => $lastname,
-        "username" => $username,
-        "password" => $password  // En una aplicación real, deberías encriptar la contraseña.
-    ];
+    // **IMPORTANTE: Encriptar la contraseña antes de guardarla**
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    // Agregar el nuevo usuario al array de usuarios
-    $users[] = $new_user;
+    // Verificar si el nombre de usuario ya existe en la base de datos
+    $stmt = $conn->prepare("SELECT username FROM users WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $stmt->store_result();
 
-    // Guardar el array actualizado en el archivo JSON
-    file_put_contents('../../users.json', json_encode($users, JSON_PRETTY_PRINT));
+    if ($stmt->num_rows > 0) {
+        $_SESSION['error_message'] = "Username already taken.";
+        $_SESSION['signup_name'] = $name;
+        $_SESSION['signup_lastname'] = $lastname;
+        $_SESSION['signup_username'] = $username;
+        $stmt->close();
+        header("Location: ../../signup.php");
+        exit;
+    }
+    $stmt->close();
 
-    // Redirigir al usuario al login con mensaje de éxito
-    $_SESSION['success_message'] = "Registration successful! You can now log in.";
-    header("Location: ../../login.php");
-    exit;
+    // Insertar el nuevo usuario en la base de datos
+    $stmt = $conn->prepare("INSERT INTO users (name, lastname, username, pass) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("ssss", $name, $lastname, $username, $hashed_password);
+
+    if ($stmt->execute()) {
+        $_SESSION['success_message'] = "Registration successful! You can now log in.";
+        $stmt->close();
+        header("Location: ../../login.php");
+        exit;
+    } else {
+        $_SESSION['error_message'] = "Error during registration. Please try again.";
+        $stmt->close();
+        header("Location: ../../signup.php");
+        exit;
+    }
+
+    $conn->close();
 }
+?>
